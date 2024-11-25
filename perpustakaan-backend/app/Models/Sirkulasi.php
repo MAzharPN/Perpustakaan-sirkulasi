@@ -9,38 +9,55 @@ class Sirkulasi extends Model
 {
     use HasFactory;
 
-    /**
-     * Table name for this model.
-     */
+    // Tentukan tabel yang digunakan
     protected $table = 'sirkulasis';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    // Tentukan atribut yang bisa diisi
     protected $fillable = [
         'id_buku',
         'id_user',
         'tgl_pinjam',
-        'tgl_kembali',
-        'tgl_pengembalian',
         'status',
+        'tgl_pengembalian',
     ];
 
-    /**
-     * Relasi dengan buku.
-     */
+    // Mendefinisikan relasi dengan Buku
     public function buku()
     {
-        return $this->belongsTo(Buku::class, 'id_buku', 'id_buku');
+        return $this->belongsTo(Buku::class, 'id_buku');
     }
 
-    /**
-     * Relasi dengan user.
-     */
+    // Mendefinisikan relasi dengan User
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
+    // Menampilkan Semua Data Sirkulasi dengan Eloquent
+    public static function getAllSirkulasi()
+    {
+        return self::with('buku', 'user')->get();
+    }
+
+    // Menambahkan Data Sirkulasi menggunakan Eloquent
+    public static function storeSirkulasi($data)
+    {
+        return self::create($data);
+    }
+
+    // Memperbarui Status Sirkulasi menggunakan Eloquent
+    public static function updateSirkulasi($id, $data)
+    {
+        $sirkulasi = self::findOrFail($id);
+        $sirkulasi->update($data);
+        return $sirkulasi;
+    }
+
+    // Menghapus Data Sirkulasi menggunakan Eloquent
+    public static function deleteSirkulasi($id)
+    {
+        $sirkulasi = self::findOrFail($id);
+        $sirkulasi->delete();
+        return $sirkulasi;
     }
 }
